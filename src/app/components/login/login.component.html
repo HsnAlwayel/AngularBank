@@ -1,0 +1,52 @@
+<div class="flex justify-center items-center min-h-screen bg-gray-100">
+  <p-card header="Login" styleClass="w-full max-w-md">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="mb-4">
+        <label for="username" class="block mb-2">Username</label>
+        <input
+          id="username"
+          type="text"
+          pInputText
+          formControlName="username"
+          class="w-full"
+        />
+        @if (loginForm.get('username')?.invalid &&
+        loginForm.get('username')?.touched) {
+        <small class="text-red-500">Username is required</small>
+        }
+      </div>
+
+      <div class="mb-4">
+        <label for="password" class="block mb-2">Password</label>
+        <p-password
+          id="password"
+          formControlName="password"
+          [toggleMask]="true"
+          [feedback]="false"
+          styleClass="w-full"
+        ></p-password>
+        @if (loginForm.get('password')?.invalid &&
+        loginForm.get('password')?.touched) {
+        <small class="text-red-500">Password is required</small>
+        }
+      </div>
+
+      @if (errorMessage) {
+      <div class="mb-4">
+        <p-message severity="error" [text]="errorMessage"></p-message>
+      </div>
+      }
+
+      <div class="flex justify-between items-center">
+        <p-button
+          type="submit"
+          [disabled]="loginForm.invalid || isLoading"
+          [label]="isLoading ? 'Logging in...' : 'Login'"
+        ></p-button>
+        <a routerLink="/register" class="text-blue-500 hover:underline"
+          >Create an account</a
+        >
+      </div>
+    </form>
+  </p-card>
+</div>
