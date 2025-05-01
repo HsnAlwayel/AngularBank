@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, tap, throwError } from 'rxjs';
-import { BaseService } from './base.service';
-import { AuthRequest, AuthResponse } from '../interfaces/auth/auth';
+import { BaseService } from '../base.service';
+import { AuthRequest, AuthResponse } from '../../interfaces/auth/auth';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends BaseService {

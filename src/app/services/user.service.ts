@@ -4,7 +4,6 @@ import { Observable, catchError, throwError } from 'rxjs';
 import { BaseService } from './base.service';
 import { User } from '../interfaces/user';
 import { UserProfile } from '../interfaces/auth/auth';
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,15 +11,13 @@ import { AuthService } from './auth.service';
 export class UserService extends BaseService {
   private readonly baseUrl = 'https://react-bank-project.eapi.joincoded.com';
 
-  constructor(_http: HttpClient, private authService: AuthService) {
+  constructor(_http: HttpClient) {
     super(_http);
   }
 
   getProfile(): Observable<UserProfile> {
     return this.get<UserProfile>(
-      `${this.baseUrl}/mini-project/api/auth/me`,
-      undefined,
-      { Authorization: `Bearer ${this.authService.getToken()}` }
+      `${this.baseUrl}/mini-project/api/auth/me`
     ).pipe(
       catchError((error) => {
         console.error('Failed to fetch profile:', error);
@@ -30,11 +27,7 @@ export class UserService extends BaseService {
   }
 
   getAllUsers(): Observable<User[]> {
-    return this.get<User[]>(
-      `${this.baseUrl}/mini-project/api/auth/users`,
-      undefined,
-      { Authorization: `Bearer ${this.authService.getToken()}` }
-    ).pipe(
+    return this.get<User[]>(`${this.baseUrl}/mini-project/api/auth/users`).pipe(
       catchError((error) => {
         console.error('Failed to fetch users:', error);
         return throwError(() => error);
@@ -45,9 +38,7 @@ export class UserService extends BaseService {
   updateProfile(formData: FormData): Observable<UserProfile> {
     return this.put<UserProfile, FormData>(
       `${this.baseUrl}/mini-project/api/auth/profile`,
-      formData,
-      undefined,
-      { Authorization: `Bearer ${this.authService.getToken()}` }
+      formData
     ).pipe(
       catchError((error) => {
         console.error('Failed to update profile:', error);
@@ -58,9 +49,7 @@ export class UserService extends BaseService {
 
   getUserById(userId: string): Observable<User> {
     return this.get<User>(
-      `${this.baseUrl}/mini-project/api/auth/user/${userId}`,
-      undefined,
-      { Authorization: `Bearer ${this.authService.getToken()}` }
+      `${this.baseUrl}/mini-project/api/auth/user/${userId}`
     ).pipe(
       catchError((error) => {
         console.error(`Failed to fetch user ${userId}:`, error);

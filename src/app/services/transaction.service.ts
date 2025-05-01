@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { BaseService } from './base.service';
 import { Transaction, TransactionRequest } from '../interfaces/transaction';
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,15 +10,13 @@ import { AuthService } from './auth.service';
 export class TransactionService extends BaseService {
   private readonly baseUrl = 'https://react-bank-project.eapi.joincoded.com';
 
-  constructor(_http: HttpClient, private authService: AuthService) {
+  constructor(_http: HttpClient) {
     super(_http);
   }
 
   getMyTransactions(): Observable<Transaction[]> {
     return this.get<Transaction[]>(
-      `${this.baseUrl}/mini-project/api/transactions/my`,
-      undefined,
-      { Authorization: `Bearer ${this.authService.getToken()}` }
+      `${this.baseUrl}/mini-project/api/transactions/my`
     ).pipe(
       catchError((error) => {
         console.error('Failed to fetch transactions:', error);
@@ -31,9 +28,7 @@ export class TransactionService extends BaseService {
   deposit(amount: number): Observable<Transaction> {
     return this.put<Transaction, TransactionRequest>(
       `${this.baseUrl}/mini-project/api/transactions/deposit`,
-      { amount },
-      undefined,
-      { Authorization: `Bearer ${this.authService.getToken()}` }
+      { amount }
     ).pipe(
       catchError((error) => {
         console.error('Deposit failed:', error);
@@ -45,9 +40,7 @@ export class TransactionService extends BaseService {
   withdraw(amount: number): Observable<Transaction> {
     return this.put<Transaction, TransactionRequest>(
       `${this.baseUrl}/mini-project/api/transactions/withdraw`,
-      { amount },
-      undefined,
-      { Authorization: `Bearer ${this.authService.getToken()}` }
+      { amount }
     ).pipe(
       catchError((error) => {
         console.error('Withdrawal failed:', error);
@@ -59,9 +52,7 @@ export class TransactionService extends BaseService {
   transfer(username: string, amount: number): Observable<Transaction> {
     return this.put<Transaction, TransactionRequest>(
       `${this.baseUrl}/mini-project/api/transactions/transfer/${username}`,
-      { amount },
-      undefined,
-      { Authorization: `Bearer ${this.authService.getToken()}` }
+      { amount }
     ).pipe(
       catchError((error) => {
         console.error(`Transfer to ${username} failed:`, error);
