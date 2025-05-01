@@ -1,1 +1,83 @@
-<p>transactions works!</p>
+<!-- src/app/transactions/transactions.component.html -->
+
+<h2>Transaction History</h2>
+
+<!-- Search Bar -->
+<div class="search-bar">
+  <input pInputText type="text" placeholder="Search" [(ngModel)]="searchTerm" />
+  <button pButton type="button" label="Search" (click)="onSearch()"></button>
+</div>
+
+<!-- Filter Controls -->
+<div class="filter-controls">
+  <label>Filter:</label>
+  <p-radioButton
+    name="filter"
+    value="all"
+    [(ngModel)]="filter"
+    label="All"
+  ></p-radioButton>
+  <p-radioButton
+    name="filter"
+    value="deposit"
+    [(ngModel)]="filter"
+    label="Deposit"
+  ></p-radioButton>
+  <p-radioButton
+    name="filter"
+    value="withdraw"
+    [(ngModel)]="filter"
+    label="Withdraw"
+  ></p-radioButton>
+  <p-radioButton
+    name="filter"
+    value="transfer"
+    [(ngModel)]="filter"
+    label="Transfer"
+  ></p-radioButton>
+  <p-radioButton
+    name="filter"
+    value="date"
+    [(ngModel)]="filter"
+    label="By Date"
+  ></p-radioButton>
+  <p-calendar [(ngModel)]="dateFrom" placeholder="From"></p-calendar>
+  <p-calendar [(ngModel)]="dateTo" placeholder="To"></p-calendar>
+</div>
+
+<!-- Transactions Table -->
+<p-table [value]="transactions" class="transactions-table">
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="amount">
+        Amount <p-sortIcon field="amount"></p-sortIcon>
+      </th>
+      <th pSortableColumn="createdAt">
+        Date <p-sortIcon field="createdAt"></p-sortIcon>
+      </th>
+      <th pSortableColumn="type">
+        Type <p-sortIcon field="type"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-tx>
+    <tr>
+      <td
+        [ngClass]="{
+          deposit: tx.type === 'deposit',
+          withdraw: tx.type === 'withdraw',
+          transfer: tx.type === 'transfer'
+        }"
+      >
+        {{ tx.type === "deposit" ? "+" : "-" }}{{ tx.amount }}
+      </td>
+      <td>{{ tx.createdAt | date : "dd/MM/yyyy" }}</td>
+      <td>{{ tx.type | titlecase }}</td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="3">No transactions found.</td>
+    </tr>
+  </ng-template>
+</p-table>
