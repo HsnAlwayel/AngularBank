@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TableModule } from 'primeng/table';
+import { TableModule, TablePageEvent } from 'primeng/table';
+import { PaginatorModule } from 'primeng/paginator';
+import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
-import { RadioButtonModule } from 'primeng/radiobutton';
+import { ToolbarModule } from 'primeng/toolbar';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { Transaction } from '../../interfaces/transaction';
@@ -16,8 +18,10 @@ import { TransactionService } from '../../services/transaction.service';
     CommonModule,
     FormsModule,
     TableModule,
+    PaginatorModule,
+    DropdownModule,
     CalendarModule,
-    RadioButtonModule,
+    ToolbarModule,
     InputTextModule,
     ButtonModule,
   ],
@@ -25,12 +29,21 @@ import { TransactionService } from '../../services/transaction.service';
   styleUrls: ['./transactions.component.css'],
 })
 export class TransactionsComponent implements OnInit {
-  // Data and filters
   transactions: Transaction[] = [];
   searchTerm = '';
-  filter: 'all' | 'deposit' | 'withdraw' | 'transfer' | 'date' = 'all';
-  dateFrom: Date | null = null;
-  dateTo: Date | null = null;
+  selectedType?: string;
+  dateFrom?: Date;
+  dateTo?: Date;
+  filterOptions = [
+    { label: 'All', value: undefined },
+    { label: 'Deposit', value: 'deposit' },
+    { label: 'Withdraw', value: 'withdraw' },
+    { label: 'Transfer', value: 'transfer' },
+  ];
+
+  // Pagination
+  pageSize = 10;
+  totalRecords = 0;
 
   constructor(private transactionService: TransactionService) {}
 
@@ -39,14 +52,29 @@ export class TransactionsComponent implements OnInit {
   }
 
   loadTransactions(): void {
-    this.transactionService.getMyTransactions().subscribe({
-      next: (data) => (this.transactions = data),
-      error: (err) => console.error('Load failed', err),
-    });
+    this.transactionService
+      .getMyTransactions({
+        type: this.selectedType,
+        dateFrom: this.dateFrom?.toISOString(),
+        dateTo: this.dateTo?.toISOString(),
+      })
+      .subscribe({
+        next: (data: Transaction[]) => {
+          this.transactions = data;
+          this.totalRecords = data.length;
+        },
+        error: (err: any) => {
+          console.error('Load failed', err);
+        },
+      });
   }
 
   onSearch(): void {
-    // To DO: implement search logic against API or filter locally
+    this.loadTransactions();
+  }
+
+  onPageChange(event: TablePageEvent): void {
+    this.pageSize = event.rows;
     this.loadTransactions();
   }
 }
