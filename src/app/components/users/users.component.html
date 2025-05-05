@@ -1,1 +1,48 @@
-<p>users works!</p>
+<br>
+<br><p-table [value]="users()"
+    sortField="balance" 
+    [sortOrder]="-1"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[5,10,20]"
+    [globalFilterFields]="['_id','username','balance']"
+    [tableStyle]="{ 'min-width': '60rem' }">
+    <ng-template pTemplate="header" let-user>
+        <th>
+            <p-columnFilter 
+            type="text" 
+            field="_id" 
+            placeholder="Search by ID" 
+            ariaLabel="Filter _id" />
+        </th>
+        <th>
+            <p-columnFilter 
+            type="text" 
+            field="username" 
+            placeholder="Search by Username" 
+            ariaLabel="Filter username" />
+        </th>
+        <tr>
+            <th pSortableColumn="_id" style="width:20%">
+                ID <p-sortIcon field="_id" />
+            </th>
+            <th pSortableColumn="username" style="width:20%">
+                Username <p-sortIcon field="username" />
+            </th>
+            <th pSortableColumn="image" style="width:20%">
+                Image <p-sortIcon field="image" />
+            </th>
+            <th pSortableColumn="balance" style="width:20%">
+                Balance <p-sortIcon field="balance" />
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+        <tr>
+            <td>{{ user._id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user?.image }}</td>
+            <td>{{ user.balance  | currency : 'KWD ' }}</td>
+        </tr>
+    </ng-template>
+</p-table>
