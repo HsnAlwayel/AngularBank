@@ -1,0 +1,17 @@
+/* Horizontal layout for filter radios */
+.filter-list {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.filter-list li {
+  display: flex;
+  align-items: center;
+}
+
+.filter-list input[type="radio"] {
+  margin-right: 0.5rem;
+}

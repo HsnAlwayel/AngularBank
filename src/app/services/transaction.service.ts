@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { BaseService } from './base.service';
-import { Transaction, TransactionRequest } from '../interfaces/transaction';
+import { Transaction, TransactionQuery } from '../interfaces/transaction';
+import { AuthService } from './auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,13 +11,23 @@ import { Transaction, TransactionRequest } from '../interfaces/transaction';
 export class TransactionService extends BaseService {
   private readonly baseUrl = 'https://react-bank-project.eapi.joincoded.com';
 
-  constructor(_http: HttpClient) {
-    super(_http);
+  constructor(http: HttpClient, private authService: AuthService) {
+    super(http);
   }
 
-  getMyTransactions(): Observable<Transaction[]> {
+  /**
+   * Fetch the logged-in user’s transactions, optionally filtered by the given query.
+   */
+  getMyTransactions(query?: TransactionQuery): Observable<Transaction[]> {
+    const params: Record<string, any> = {};
+    if (query?.type) params['type'] = query.type;
+    if (query?.dateFrom) params['dateFrom'] = query.dateFrom;
+    if (query?.dateTo) params['dateTo'] = query.dateTo;
+
     return this.get<Transaction[]>(
-      `${this.baseUrl}/mini-project/api/transactions/my`
+      `${this.baseUrl}/mini-project/api/transactions/my`,
+      params,
+      { Authorization: `Bearer ${this.authService.getToken()}` }
     ).pipe(
       catchError((error) => {
         console.error('Failed to fetch transactions:', error);
@@ -25,10 +36,13 @@ export class TransactionService extends BaseService {
     );
   }
 
+  /** Deposit into the user’s account */
   deposit(amount: number): Observable<Transaction> {
-    return this.put<Transaction, TransactionRequest>(
+    return this.put<Transaction, { amount: number }>(
       `${this.baseUrl}/mini-project/api/transactions/deposit`,
-      { amount }
+      { amount },
+      undefined,
+      { Authorization: `Bearer ${this.authService.getToken()}` }
     ).pipe(
       catchError((error) => {
         console.error('Deposit failed:', error);
@@ -37,10 +51,13 @@ export class TransactionService extends BaseService {
     );
   }
 
+  /** Withdraw from the user’s account */
   withdraw(amount: number): Observable<Transaction> {
-    return this.put<Transaction, TransactionRequest>(
+    return this.put<Transaction, { amount: number }>(
       `${this.baseUrl}/mini-project/api/transactions/withdraw`,
-      { amount }
+      { amount },
+      undefined,
+      { Authorization: `Bearer ${this.authService.getToken()}` }
     ).pipe(
       catchError((error) => {
         console.error('Withdrawal failed:', error);
@@ -49,10 +66,13 @@ export class TransactionService extends BaseService {
     );
   }
 
+  /** Transfer to another user */
   transfer(username: string, amount: number): Observable<Transaction> {
-    return this.put<Transaction, TransactionRequest>(
+    return this.put<Transaction, { amount: number }>(
       `${this.baseUrl}/mini-project/api/transactions/transfer/${username}`,
-      { amount }
+      { amount },
+      undefined,
+      { Authorization: `Bearer ${this.authService.getToken()}` }
     ).pipe(
       catchError((error) => {
         console.error(`Transfer to ${username} failed:`, error);
