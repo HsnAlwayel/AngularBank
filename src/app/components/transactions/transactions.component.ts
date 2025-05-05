@@ -29,52 +29,88 @@ import { TransactionService } from '../../services/transaction.service';
   styleUrls: ['./transactions.component.css'],
 })
 export class TransactionsComponent implements OnInit {
+  /** All transactions from API */
+  allTransactions: Transaction[] = [];
+  /** Filtered transactions to display */
   transactions: Transaction[] = [];
-  searchTerm = '';
-  selectedType?: string;
+
+  /** UI filter state */
+  selectedType: string | null = null;
   dateFrom?: Date;
   dateTo?: Date;
+  minAmount?: number;
+  maxAmount?: number;
   filterOptions = [
-    { label: 'All', value: undefined },
+    { label: 'All', value: null },
     { label: 'Deposit', value: 'deposit' },
     { label: 'Withdraw', value: 'withdraw' },
     { label: 'Transfer', value: 'transfer' },
   ];
 
-  // Pagination
+  /** Pagination state */
   pageSize = 10;
   totalRecords = 0;
 
   constructor(private transactionService: TransactionService) {}
 
   ngOnInit(): void {
-    this.loadTransactions();
+    this.transactionService.getMyTransactions().subscribe({
+      next: (data) => {
+        this.allTransactions = data;
+        this.applyFilters();
+      },
+      error: (err) => console.error('Load failed', err),
+    });
   }
 
-  loadTransactions(): void {
-    this.transactionService
-      .getMyTransactions({
-        type: this.selectedType,
-        dateFrom: this.dateFrom?.toISOString(),
-        dateTo: this.dateTo?.toISOString(),
-      })
-      .subscribe({
-        next: (data: Transaction[]) => {
-          this.transactions = data;
-          this.totalRecords = data.length;
-        },
-        error: (err: any) => {
-          console.error('Load failed', err);
-        },
-      });
+  /** Compute filtered list based on UI state */
+  applyFilters(): void {
+    this.transactions = this.allTransactions.filter((tx) => {
+      let ok = true;
+      const txDate = new Date(tx.createdAt);
+
+      if (this.selectedType != null) {
+        ok = ok && tx.type === this.selectedType;
+      }
+      if (this.dateFrom) {
+        const start = new Date(this.dateFrom);
+        start.setHours(0, 0, 0, 0);
+        ok = ok && txDate >= start;
+      }
+      if (this.dateTo) {
+        const end = new Date(this.dateTo);
+        end.setHours(23, 59, 59, 999);
+        ok = ok && txDate <= end;
+      }
+      if (this.minAmount != null) {
+        ok = ok && tx.amount >= this.minAmount;
+      }
+      if (this.maxAmount != null) {
+        ok = ok && tx.amount <= this.maxAmount;
+      }
+      return ok;
+    });
+    this.totalRecords = this.transactions.length;
   }
 
+  /** Called when any filter input changes */
   onSearch(): void {
-    this.loadTransactions();
+    this.applyFilters();
   }
 
+  /** Handle pagination events */
   onPageChange(event: TablePageEvent): void {
     this.pageSize = event.rows;
-    this.loadTransactions();
+    this.applyFilters();
+  }
+
+  /** Clear all filters and show all transactions */
+  clearFilters(): void {
+    this.selectedType = null;
+    this.dateFrom = undefined;
+    this.dateTo = undefined;
+    this.minAmount = undefined;
+    this.maxAmount = undefined;
+    this.applyFilters();
   }
 }

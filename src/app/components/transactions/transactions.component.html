@@ -1,41 +1,58 @@
 <p>user works!</p>
+
 <p-toolbar>
   <div class="p-toolbar-group-left">
     <p-dropdown
       [options]="filterOptions"
       [(ngModel)]="selectedType"
       placeholder="Filter by Type"
-      (onChange)="loadTransactions()"
+      (onChange)="onSearch()"
     ></p-dropdown>
 
     <p-calendar
       [(ngModel)]="dateFrom"
       selectionMode="single"
       placeholder="From"
-      (onSelect)="loadTransactions()"
+      (onSelect)="onSearch()"
     ></p-calendar>
 
     <p-calendar
       [(ngModel)]="dateTo"
       selectionMode="single"
       placeholder="To"
-      (onSelect)="loadTransactions()"
+      (onSelect)="onSearch()"
     ></p-calendar>
+
+    <div class="amount-range" style="display: flex; align-items: center">
+      <input
+        pInputText
+        type="number"
+        placeholder="Min"
+        [(ngModel)]="minAmount"
+        (input)="onSearch()"
+        style="width: 4.5rem; margin-right: 0.25rem"
+      />
+      <span style="margin: 0 0.5rem; font-weight: bold">–</span>
+      <input
+        pInputText
+        type="number"
+        placeholder="Max"
+        [(ngModel)]="maxAmount"
+        (input)="onSearch()"
+        style="width: 4.5rem; margin-left: 0.25rem"
+      />
+    </div>
   </div>
 
   <div class="p-toolbar-group-right">
-    <input
-      pInputText
-      type="text"
-      placeholder="Search..."
-      [(ngModel)]="searchTerm"
-      (input)="loadTransactions()"
-    />
     <button
       pButton
       type="button"
-      icon="pi pi-search"
-      (click)="loadTransactions()"
+      label="Clear Filters"
+      icon="pi pi-filter-slash"
+      styleClass="p-button-danger p-button-outlined p-button-rounded"
+      (click)="clearFilters()"
+      title="Clear all filters"
     ></button>
   </div>
 </p-toolbar>
