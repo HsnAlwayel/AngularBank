@@ -1,0 +1,155 @@
+<div class="container mx-auto p-4 max-w-6xl">
+  <div
+    class="bg-gradient-to-r from-primary-600 to-accent-600 text-white p-6 rounded-xl mb-8 shadow-lg"
+  >
+    <h1 class="text-3xl font-bold mb-2">Your Profile</h1>
+    <p class="text-primary-100">View and manage your account</p>
+  </div>
+
+  <div *ngIf="isLoading" class="flex justify-center my-12">
+    <div class="text-center">
+      <i class="pi pi-spin pi-spinner text-4xl text-primary-500 mb-3"></i>
+      <p class="text-gray-400">Loading your profile...</p>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="md:col-span-1">
+      <p-card styleClass="hover-scale">
+        <div class="flex flex-col items-center gap-4 p-4">
+          <div
+            class="relative group cursor-pointer"
+            (click)="openImageDialog()"
+          >
+            <img
+              *ngIf="profileImage"
+              [src]="profileImage"
+              alt="Profile"
+              class="w-32 h-32 rounded-full object-cover border-4 border-dark-300"
+            />
+
+            <div
+              *ngIf="!profileImage"
+              class="w-32 h-32 rounded-full bg-primary-900 flex items-center justify-center border-4 border-dark-300"
+            >
+              <span class="text-primary-300 text-4xl font-bold">{{
+                getInitial()
+              }}</span>
+            </div>
+
+            <div
+              class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <i class="pi pi-camera text-white text-2xl"></i>
+            </div>
+          </div>
+
+          <h2 class="text-xl font-semibold text-gray-200">{{ username }}</h2>
+
+          <button
+            pButton
+            label="Change Photo"
+            icon="pi pi-camera"
+            (click)="openImageDialog()"
+            class="p-button-outlined p-button-rounded"
+          ></button>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="md:col-span-2">
+      <p-card header="Account Information" styleClass="hover-scale">
+        <div class="space-y-6 p-2">
+          <div class="bg-dark-300 p-6 rounded-lg">
+            <h3 class="text-gray-400 mb-2">Current Balance</h3>
+            <p class="text-3xl font-bold text-primary-300">
+              {{ balance | currency : "KWD " }}
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-dark-300 p-4 rounded-lg">
+              <h3 class="text-gray-400 mb-2">Username</h3>
+              <p class="text-gray-200 font-medium">{{ username }}</p>
+            </div>
+
+            <div class="bg-dark-300 p-4 rounded-lg">
+              <h3 class="text-gray-400 mb-2">User Id</h3>
+              <p
+                class="text-gray-200 font-medium text-sm overflow-hidden text-ellipsis"
+              >
+                {{ userId }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <p-dialog
+    [(visible)]="showDialog"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    header="Change Profile Picture"
+    [style]="{ width: '400px' }"
+    styleClass="p-fluid"
+  >
+    <div class="flex flex-col gap-4 p-3">
+      <div class="flex justify-center mb-2">
+        <div *ngIf="imagePreview" class="mb-3">
+          <img
+            [src]="imagePreview"
+            alt="Preview"
+            class="w-32 h-32 rounded-full object-cover border-4 border-dark-300"
+          />
+        </div>
+      </div>
+
+      <div
+        class="border-2 border-dashed border-dark-300 rounded-lg p-5 text-center hover:border-primary-500 cursor-pointer"
+      >
+        <label for="profileImage" class="cursor-pointer">
+          <div class="flex flex-col items-center">
+            <i class="pi pi-upload text-gray-500 text-2xl mb-2"></i>
+            <span class="text-gray-400">Click to choose an image</span>
+            <span *ngIf="selectedFile" class="mt-2 text-success-400 text-sm">
+              Selected: {{ selectedFile.name }}
+            </span>
+          </div>
+          <input
+            type="file"
+            id="profileImage"
+            (change)="onFileSelect($event)"
+            accept="image/*"
+            class="hidden"
+          />
+        </label>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="flex justify-between gap-3">
+        <button
+          pButton
+          label="Cancel"
+          icon="pi pi-times"
+          (click)="cancelUpload()"
+          class="p-button-text"
+        ></button>
+
+        <button
+          pButton
+          label="Update"
+          icon="pi pi-check"
+          (click)="uploadImage()"
+          [disabled]="!selectedFile || isLoading"
+          class="p-button-success"
+        ></button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <p-toast></p-toast>
+</div>

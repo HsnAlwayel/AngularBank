@@ -1,68 +1,117 @@
-<br />
-<br />
-<!-- Users table -->
-<p-table
-  [value]="users()"
-  sortField="balance"
-  [sortOrder]="-1"
-  [paginator]="true"
-  [rows]="10"
-  [rowsPerPageOptions]="[5, 10, 20]"
-  [globalFilterFields]="['username', 'balance']"
-  [tableStyle]="{ 'min-width': '50rem' }"
->
-  <ng-template pTemplate="header">
-    <tr>
-      <th pSortableColumn="username" style="width: 50%">
-        User <p-sortIcon field="username" />
-      </th>
-      <th pSortableColumn="balance" style="width: 30%">
-        Balance <p-sortIcon field="balance" />
-      </th>
-      <th style="width: 20%">Actions</th>
-    </tr>
-  </ng-template>
+<div class="container mx-auto p-4 max-w-6xl">
+  <div
+    class="bg-gradient-to-r from-secondary-600 to-primary-600 text-white p-6 rounded-xl mb-8 shadow-lg"
+  >
+    <h1 class="text-3xl font-bold mb-2">User Directory</h1>
+    <p class="text-primary-100">
+      View and interact with other users of the banking system
+    </p>
+  </div>
 
-  <ng-template pTemplate="body" let-user>
-    <tr>
-      <td>
-        <div class="flex items-center gap-2">
-          @if (user.image) {
-          <img
-            [src]="user.image"
-            alt="{{ user.username }}"
-            class="w-8 h-8 rounded-full object-cover"
-          />
-          } @else {
-          <div
-            class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center"
-          >
-            <span class="text-blue-700 font-bold">{{
-              user.username.charAt(0).toUpperCase()
+  <!-- Users table -->
+  <p-table
+    [value]="users()"
+    sortField="balance"
+    [sortOrder]="-1"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [globalFilterFields]="['username', 'balance']"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    styleClass="p-datatable-rounded p-datatable-hoverable-rows"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="username" style="width: 50%" class="text-gray-300">
+          <div class="flex items-center">
+            <i class="pi pi-user mr-2 text-primary-400"></i>
+            User
+            <p-sortIcon field="username" />
+          </div>
+        </th>
+        <th pSortableColumn="balance" style="width: 30%" class="text-gray-300">
+          <div class="flex items-center">
+            <i class="pi pi-dollar mr-2 text-primary-400"></i>
+            Balance
+            <p-sortIcon field="balance" />
+          </div>
+        </th>
+        <th style="width: 20%" class="text-gray-300">
+          <div class="flex items-center">
+            <i class="pi pi-cog mr-2 text-primary-400"></i>
+            Actions
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-user>
+      <tr class="hover:bg-dark-50 transition-colors duration-150">
+        <td>
+          <div class="flex items-center gap-3">
+            @if (user.image) {
+            <img
+              [src]="user.image"
+              alt="{{ user.username }}"
+              class="w-10 h-10 rounded-full object-cover border-2 border-dark-300"
+            />
+            } @else {
+            <div
+              class="w-10 h-10 rounded-full bg-primary-900 flex items-center justify-center"
+            >
+              <span class="text-primary-300 font-bold">{{
+                user.username.charAt(0).toUpperCase()
+              }}</span>
+            </div>
+            }
+            <div>
+              <span class="font-medium text-gray-200">{{ user.username }}</span>
+              <span class="text-xs block text-gray-400">Member</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="bg-dark-300 px-3 py-1 rounded-full inline-block">
+            <span class="font-semibold text-gray-200">{{
+              user.balance | currency : "KWD "
             }}</span>
           </div>
+        </td>
+        <td>
+          <!-- Only show transfer button for other users (not yourself) -->
+          @if (user.username !== currentUsername) {
+          <p-button
+            icon="pi pi-send"
+            label="Transfer"
+            severity="success"
+            styleClass="p-button-rounded p-button-sm"
+            (onClick)="openTransferDialog(user)"
+          ></p-button>
+          } @else {
+          <span
+            class="bg-primary-900 text-primary-400 text-xs font-medium px-3 py-1 rounded-full"
+            >You</span
+          >
           }
-          <span class="font-medium">{{ user.username }}</span>
-        </div>
-      </td>
-      <td>{{ user.balance | currency : "KWD " }}</td>
-      <td>
-        <!-- Only show transfer button for other users (not yourself) -->
-        @if (user.username !== currentUsername) {
-        <p-button
-          icon="pi pi-send"
-          label="Transfer"
-          severity="success"
-          (onClick)="openTransferDialog(user)"
-        ></p-button>
-        }
-      </td>
-    </tr>
-  </ng-template>
-</p-table>
+        </td>
+      </tr>
+    </ng-template>
 
-<app-transfer-dialog
-  [(visible)]="ModalVisible"
-  [targetUser]="selectedUser"
-  (transferComplete)="refreshUsers()"
-></app-transfer-dialog>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="3" class="p-6 text-center">
+          <div class="flex flex-col items-center text-gray-400">
+            <i class="pi pi-users text-4xl mb-3 text-gray-500"></i>
+            <p>No users found</p>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <app-transfer-dialog
+    [(visible)]="ModalVisible"
+    [targetUser]="selectedUser"
+    (transferComplete)="refreshUsers()"
+  ></app-transfer-dialog>
+</div>

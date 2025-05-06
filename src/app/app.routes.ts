@@ -5,6 +5,7 @@ import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from './services/auth/gaurds';
 import { TransactionsComponent } from './components/transactions/transactions.component';
 import { UsersComponent } from './components/users/users.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -12,6 +13,11 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    canActivate: [AuthGuard], // If you're using auth guards
+  },
   {
     path: 'transactions',
     component: TransactionsComponent,
