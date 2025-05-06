@@ -1,101 +1,194 @@
+<div class="container mx-auto p-4 max-w-6xl">
+  <div
+    class="bg-gradient-to-r from-accent-600 to-primary-600 text-white p-6 rounded-xl mb-8 shadow-lg"
+  >
+    <h1 class="text-3xl font-bold mb-2">Your Transactions</h1>
+    <p class="text-primary-100">View and filter your transaction history</p>
+  </div>
 
-<p-toolbar>
-  <div class="p-toolbar-group-left">
-    <p-dropdown
-      class="filter-input"
-      [options]="filterOptions"
-      [(ngModel)]="selectedType"
-      placeholder="Filter by Type"
-      (onChange)="onSearch()"
-    ></p-dropdown>
+  <p-toolbar
+    styleClass="mb-6 rounded-xl shadow-sm bg-dark-100 border border-dark-300"
+  >
+    <div class="p-toolbar-group-left flex flex-wrap gap-3">
+      <p-dropdown
+        class="filter-input"
+        [options]="filterOptions"
+        [(ngModel)]="selectedType"
+        placeholder="Transaction Type"
+        styleClass="rounded-lg"
+        (onChange)="onSearch()"
+      ></p-dropdown>
 
-    <p-calendar
-      class="filter-input"
-      [(ngModel)]="dateFrom"
-      selectionMode="single"
-      placeholder="From"
-      (onSelect)="onSearch()"
-    ></p-calendar>
+      <div class="flex gap-2">
+        <p-calendar
+          class="filter-input"
+          [(ngModel)]="dateFrom"
+          selectionMode="single"
+          placeholder="From Date"
+          styleClass="rounded-lg"
+          (onSelect)="onSearch()"
+        ></p-calendar>
 
-    <p-calendar
-      class="filter-input"
-      [(ngModel)]="dateTo"
-      selectionMode="single"
-      placeholder="To"
-      (onSelect)="onSearch()"
-    ></p-calendar>
+        <p-calendar
+          class="filter-input"
+          [(ngModel)]="dateTo"
+          selectionMode="single"
+          placeholder="To Date"
+          styleClass="rounded-lg"
+          (onSelect)="onSearch()"
+        ></p-calendar>
+      </div>
 
-    <div class="amount-range filter-input">
-      <input
-        pInputText
-        type="number"
-        placeholder="Min"
-        [(ngModel)]="minAmount"
-        (input)="onSearch()"
-      />
-      <span class="range-separator">–</span>
-      <input
-        pInputText
-        type="number"
-        placeholder="Max"
-        [(ngModel)]="maxAmount"
-        (input)="onSearch()"
-      />
+      <div class="amount-range filter-input flex items-center gap-2">
+        <input
+          pInputText
+          type="number"
+          placeholder="Min Amount"
+          [(ngModel)]="minAmount"
+          class="rounded-lg"
+          (input)="onSearch()"
+        />
+        <span class="range-separator text-gray-400">–</span>
+        <input
+          pInputText
+          type="number"
+          placeholder="Max Amount"
+          [(ngModel)]="maxAmount"
+          class="rounded-lg"
+          (input)="onSearch()"
+        />
+      </div>
     </div>
-  </div>
 
-  <div class="p-toolbar-group-right">
-    <button
-      pButton
-      type="button"
-      label="Clear Filters"
-      icon="pi pi-filter-slash"
-      styleClass="p-button-danger p-button-outlined p-button-rounded"
-      (click)="clearFilters()"
-      title="Clear all filters"
-    ></button>
-  </div>
-</p-toolbar>
+    <div class="p-toolbar-group-right">
+      <button
+        pButton
+        type="button"
+        label="Clear Filters"
+        icon="pi pi-filter-slash"
+        class="p-button-outlined p-button-rounded"
+        (click)="clearFilters()"
+        title="Clear all filters"
+      ></button>
+    </div>
+  </p-toolbar>
 
-<p-table
-  [value]="transactions"
-  [paginator]="true"
-  [rows]="pageSize"
-  [totalRecords]="totalRecords"
-  (onPage)="onPageChange($event)"
->
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Amount</th>
-      <th>Date</th>
-      <th>Type</th>
-      <th>From</th>
-      <th>To</th>
-    </tr>
-  </ng-template>
+  <p-table
+    [value]="transactions"
+    [paginator]="true"
+    [rows]="pageSize"
+    [totalRecords]="totalRecords"
+    (onPage)="onPageChange($event)"
+    styleClass="p-datatable-rounded p-datatable-hoverable-rows"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 20%" class="text-gray-300">
+          <div class="flex items-center">
+            <i class="pi pi-dollar mr-2 text-primary-400"></i>
+            Amount
+          </div>
+        </th>
+        <th style="width: 20%" class="text-gray-300">
+          <div class="flex items-center">
+            <i class="pi pi-calendar mr-2 text-primary-400"></i>
+            Date
+          </div>
+        </th>
+        <th style="width: 20%" class="text-gray-300">
+          <div class="flex items-center">
+            <i class="pi pi-tag mr-2 text-primary-400"></i>
+            Type
+          </div>
+        </th>
+        <th style="width: 20%" class="text-gray-300">
+          <div class="flex items-center">
+            <i class="pi pi-arrow-right-arrow-left mr-2 text-primary-400"></i>
+            From
+          </div>
+        </th>
+        <th style="width: 20%" class="text-gray-300">
+          <div class="flex items-center">
+            <i class="pi pi-arrow-right mr-2 text-primary-400"></i>
+            To
+          </div>
+        </th>
+      </tr>
+    </ng-template>
 
-  <ng-template pTemplate="body" let-tx>
-    <tr>
-      <td
-        [ngClass]="{
-          deposit: tx.type === 'deposit',
-          withdraw: tx.type === 'withdraw',
-          transfer: tx.type === 'transfer'
-        }"
-      >
-        {{ tx.type === "deposit" ? "+" : "-" }}
-        {{ tx.amount | number : "1.0-2" }}
-      </td>
-      <td>{{ tx.createdAt | date : "dd/MM/yyyy" }}</td>
-      <td>{{ tx.type | titlecase }}</td>
-      <td>{{ tx.from }}</td>
-      <td>{{ tx.to }}</td>
-    </tr>
-  </ng-template>
+    <ng-template pTemplate="body" let-tx>
+      <tr class="hover:bg-dark-50 transition-colors duration-150">
+        <td>
+          <span
+            [ngClass]="{
+              'bg-success-900 text-success-300': tx.type === 'deposit',
+              'bg-danger-900 text-danger-300': tx.type === 'withdraw',
+              'bg-accent-900 text-accent-300': tx.type === 'transfer'
+            }"
+            class="px-3 py-1 rounded-full text-sm font-medium inline-block"
+          >
+            {{ tx.type === "deposit" ? "+" : "-" }}
+            {{ tx.amount | number : "1.0-2" }}
+          </span>
+        </td>
+        <td>
+          <div class="flex items-center">
+            <i class="pi pi-calendar text-gray-500 mr-2 text-sm"></i>
+            <span class="text-gray-300">{{
+              tx.createdAt | date : "dd/MM/yyyy"
+            }}</span>
+          </div>
+        </td>
+        <td>
+          <span
+            [ngClass]="{
+              'bg-success-900 text-success-300': tx.type === 'deposit',
+              'bg-danger-900 text-danger-300': tx.type === 'withdraw',
+              'bg-accent-900 text-accent-300': tx.type === 'transfer'
+            }"
+            class="px-2 py-1 rounded-md text-xs font-medium capitalize"
+          >
+            {{ tx.type }}
+          </span>
+        </td>
+        <td class="text-gray-300">
+          <div class="flex items-center gap-2">
+            @if (tx.from) {
+            <span class="font-medium">{{ tx.from }}</span>
+            } @else {
+            <span class="text-gray-500 italic">System</span>
+            }
+          </div>
+        </td>
+        <td class="text-gray-300">
+          <div class="flex items-center gap-2">
+            @if (tx.to) {
+            <span class="font-medium">{{ tx.to }}</span>
+            } @else {
+            <span class="text-gray-500 italic">System</span>
+            }
+          </div>
+        </td>
+      </tr>
+    </ng-template>
 
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="5">No transactions found.</td>
-    </tr>
-  </ng-template>
-</p-table>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5" class="p-6 text-center">
+          <div class="flex flex-col items-center text-gray-400">
+            <i class="pi pi-inbox text-4xl mb-3 text-gray-500"></i>
+            <p>No transactions found matching your filters</p>
+            <button
+              pButton
+              type="button"
+              label="Clear Filters"
+              icon="pi pi-filter-slash"
+              class="p-button-text mt-3"
+              (click)="clearFilters()"
+            ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

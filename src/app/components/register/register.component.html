@@ -1,56 +1,133 @@
-<div class="flex justify-center items-center min-h-screen bg-gray-100">
-  <p-card header="Register" styleClass="w-full max-w-md">
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="mb-4">
-        <label for="username" class="block mb-2">Username</label>
-        <input
-          id="username"
-          type="text"
-          pInputText
-          formControlName="username"
-          class="w-full"
-        />
-        @if (registerForm.get('username')?.invalid &&
-        registerForm.get('username')?.touched) {
-        <small class="text-red-500">Username is required</small>
+<div
+  class="flex justify-center items-center min-h-screen bg-gradient-to-br from-dark-300 to-dark-100"
+>
+  <div class="w-full max-w-md px-4">
+    <div class="text-center mb-8">
+      <div
+        class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-900 mb-4"
+      >
+        <i class="pi pi-user-plus text-primary-400 text-3xl"></i>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-200">Create Account</h1>
+      <p class="text-gray-400 mt-2">Join Angular Bank today</p>
+    </div>
+
+    <p-card styleClass="shadow-xl border-0">
+      <form
+        [formGroup]="registerForm"
+        (ngSubmit)="onSubmit()"
+        class="space-y-6"
+      >
+        <div>
+          <label for="username" class="block mb-2 font-medium text-gray-300"
+            >Username</label
+          >
+          <div class="p-input-icon-left w-full">
+            <i class="pi pi-user"></i>
+            <input
+              id="username"
+              type="text"
+              pInputText
+              formControlName="username"
+              class="w-full"
+              placeholder="Choose a username"
+            />
+          </div>
+          @if (registerForm.get('username')?.invalid &&
+          registerForm.get('username')?.touched) {
+          <small class="text-danger-400 mt-1 block">Username is required</small>
+          }
+        </div>
+
+        <div>
+          <label for="password" class="block mb-2 font-medium text-gray-300"
+            >Password</label
+          >
+          <div class="p-input-icon-left w-full">
+            <i class="pi pi-lock"></i>
+            <p-password
+              id="password"
+              formControlName="password"
+              [toggleMask]="true"
+              styleClass="w-full"
+              placeholder="Create a password"
+              [inputStyleClass]="'w-full pl-8'"
+            ></p-password>
+          </div>
+          @if (registerForm.get('password')?.invalid &&
+          registerForm.get('password')?.touched) {
+          <small class="text-danger-400 mt-1 block">Password is required</small>
+          }
+        </div>
+
+        <div>
+          <label for="image" class="block mb-2 font-medium text-gray-300"
+            >Profile Image</label
+          >
+          <div
+            class="border-2 border-dashed border-dark-300 rounded-lg p-6 text-center hover:border-primary-500 transition-colors"
+          >
+            @if (selectedFile) {
+            <div class="mb-3">
+              <span
+                class="bg-success-900 text-success-300 px-3 py-1 rounded-full text-sm"
+              >
+                Image selected: {{ selectedFile.name }}
+              </span>
+            </div>
+            }
+            <label for="file-upload" class="cursor-pointer">
+              <div class="flex flex-col items-center justify-center gap-2">
+                <i class="pi pi-cloud-upload text-gray-500 text-3xl"></i>
+                <span class="text-gray-400"
+                  >Click to upload a profile image</span
+                >
+                <span class="text-xs text-gray-500">(Optional)</span>
+              </div>
+              <input
+                id="file-upload"
+                type="file"
+                class="hidden"
+                (change)="onFileSelected($event)"
+                accept="image/*"
+              />
+            </label>
+          </div>
+        </div>
+
+        @if (errorMessage) {
+        <div>
+          <p-message
+            severity="error"
+            [text]="errorMessage"
+            styleClass="w-full"
+          ></p-message>
+        </div>
         }
-      </div>
 
-      <div class="mb-4">
-        <label for="password" class="block mb-2">Password</label>
-        <p-password
-          id="password"
-          formControlName="password"
-          [toggleMask]="true"
-          styleClass="w-full"
-        ></p-password>
-        @if (registerForm.get('password')?.invalid &&
-        registerForm.get('password')?.touched) {
-        <small class="text-red-500">Password is required</small>
-        }
-      </div>
+        <div>
+          <p-button
+            type="submit"
+            [disabled]="registerForm.invalid || isLoading"
+            [label]="isLoading ? 'Creating account...' : 'Create Account'"
+            icon="pi pi-user-plus"
+            styleClass="w-full p-button-lg"
+          ></p-button>
+        </div>
 
-      <div class="mb-4">
-        <label for="image" class="block mb-2">Profile Image</label>
-        <input type="file" (change)="onFileSelected($event)" accept="image/*" />
-      </div>
+        <div class="text-center pt-2">
+          <a
+            routerLink="/login"
+            class="text-primary-400 hover:text-primary-300 hover:underline transition-colors"
+          >
+            Already have an account? Log in
+          </a>
+        </div>
+      </form>
+    </p-card>
 
-      @if (errorMessage) {
-      <div class="mb-4">
-        <p-message severity="error" [text]="errorMessage"></p-message>
-      </div>
-      }
-
-      <div class="flex justify-between items-center">
-        <p-button
-          type="submit"
-          [disabled]="registerForm.invalid || isLoading"
-          [label]="isLoading ? 'Registering...' : 'Register'"
-        ></p-button>
-        <a routerLink="/login" class="text-blue-500 hover:underline"
-          >Already have an account?</a
-        >
-      </div>
-    </form>
-  </p-card>
+    <div class="text-center mt-8 text-sm text-gray-400">
+      <p>© 2025 Angular Bank. All rights reserved.</p>
+    </div>
+  </div>
 </div>
