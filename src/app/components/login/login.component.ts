@@ -13,6 +13,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { PasswordModule } from 'primeng/password';
 import { MessageModule } from 'primeng/message';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -37,7 +38,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -56,12 +58,17 @@ export class LoginComponent {
     this.authService.login(credentials).subscribe({
       next: () => {
         this.isLoading = false;
+        this.toastService.showSuccess(
+          'Login Successful',
+          'Welcome to your banking dashboard'
+        );
         this.router.navigate(['/home']);
       },
       error: (error) => {
         this.isLoading = false;
         this.errorMessage =
           error.error?.message || 'Login failed. Please try again.';
+        this.toastService.showError('Login Failed', this.errorMessage);
       },
     });
   }

@@ -3,6 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule, TablePageEvent } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
+import { DropdownModule } from 'primeng/dropdown'; 
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { TableModule, TablePageEvent } from 'primeng/table';
+import { PaginatorModule } from 'primeng/paginator';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -29,12 +35,9 @@ import { TransactionService } from '../../services/transaction.service';
   styleUrls: ['./transactions.component.css'],
 })
 export class TransactionsComponent implements OnInit {
-  /** All transactions from API */
   allTransactions: Transaction[] = [];
-  /** Filtered transactions to display */
   transactions: Transaction[] = [];
 
-  /** UI filter state */
   selectedType: string | null = null;
   dateFrom?: Date;
   dateTo?: Date;
@@ -47,7 +50,7 @@ export class TransactionsComponent implements OnInit {
     { label: 'Transfer', value: 'transfer' },
   ];
 
-  /** Pagination state */
+  /** Pagination  */
   pageSize = 10;
   totalRecords = 0;
 
@@ -63,7 +66,6 @@ export class TransactionsComponent implements OnInit {
     });
   }
 
-  /** Compute filtered list based on UI state */
   applyFilters(): void {
     this.transactions = this.allTransactions.filter((tx) => {
       let ok = true;
@@ -93,18 +95,15 @@ export class TransactionsComponent implements OnInit {
     this.totalRecords = this.transactions.length;
   }
 
-  /** Called when any filter input changes */
   onSearch(): void {
     this.applyFilters();
   }
 
-  /** Handle pagination events */
   onPageChange(event: TablePageEvent): void {
     this.pageSize = event.rows;
     this.applyFilters();
   }
 
-  /** Clear all filters and show all transactions */
   clearFilters(): void {
     this.selectedType = null;
     this.dateFrom = undefined;

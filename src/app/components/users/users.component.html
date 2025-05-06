@@ -1,1 +1,68 @@
-<p>users works!</p>
+<br />
+<br />
+<!-- Users table -->
+<p-table
+  [value]="users()"
+  sortField="balance"
+  [sortOrder]="-1"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[5, 10, 20]"
+  [globalFilterFields]="['username', 'balance']"
+  [tableStyle]="{ 'min-width': '50rem' }"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="username" style="width: 50%">
+        User <p-sortIcon field="username" />
+      </th>
+      <th pSortableColumn="balance" style="width: 30%">
+        Balance <p-sortIcon field="balance" />
+      </th>
+      <th style="width: 20%">Actions</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-user>
+    <tr>
+      <td>
+        <div class="flex items-center gap-2">
+          @if (user.image) {
+          <img
+            [src]="user.image"
+            alt="{{ user.username }}"
+            class="w-8 h-8 rounded-full object-cover"
+          />
+          } @else {
+          <div
+            class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center"
+          >
+            <span class="text-blue-700 font-bold">{{
+              user.username.charAt(0).toUpperCase()
+            }}</span>
+          </div>
+          }
+          <span class="font-medium">{{ user.username }}</span>
+        </div>
+      </td>
+      <td>{{ user.balance | currency : "KWD " }}</td>
+      <td>
+        <!-- Only show transfer button for other users (not yourself) -->
+        @if (user.username !== currentUsername) {
+        <p-button
+          icon="pi pi-send"
+          label="Transfer"
+          severity="success"
+          (onClick)="openTransferDialog(user)"
+        ></p-button>
+        }
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<app-transfer-dialog
+  [(visible)]="ModalVisible"
+  [targetUser]="selectedUser"
+  (transferComplete)="refreshUsers()"
+></app-transfer-dialog>
