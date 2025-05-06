@@ -14,9 +14,6 @@ export class TransactionService extends BaseService {
     super(http);
   }
 
-  /**
-   * Fetch the logged-in user's transactions, optionally filtered by the given query.
-   */
   getMyTransactions(query?: TransactionQuery): Observable<Transaction[]> {
     const params: Record<string, any> = {};
     if (query?.type) params['type'] = query.type;
@@ -34,7 +31,6 @@ export class TransactionService extends BaseService {
     );
   }
 
-  /** Deposit into the user's account */
   deposit(amount: number): Observable<Transaction> {
     return this.put<Transaction, { amount: number }>(
       `${this.baseUrl}/mini-project/api/transactions/deposit`,
@@ -47,7 +43,6 @@ export class TransactionService extends BaseService {
     );
   }
 
-  /** Withdraw from the user's account */
   withdraw(amount: number): Observable<Transaction> {
     return this.put<Transaction, { amount: number }>(
       `${this.baseUrl}/mini-project/api/transactions/withdraw`,
@@ -60,7 +55,6 @@ export class TransactionService extends BaseService {
     );
   }
 
-  /** Transfer to another user */
   transfer(username: string, amount: number): Observable<Transaction> {
     return this.put<Transaction, { amount: number }>(
       `${this.baseUrl}/mini-project/api/transactions/transfer/${username}`,

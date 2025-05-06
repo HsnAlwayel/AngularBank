@@ -1,0 +1,51 @@
+<p-dialog
+  [(visible)]="visible"
+  [style]="{ width: '450px' }"
+  header="Transfer Money"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hide()"
+>
+  @if (targetUser) {
+  <div class="flex flex-col gap-4 p-4">
+    <div class="text-center mb-4">
+      <h3 class="font-semibold">Transfer to {{ targetUser.username }}</h3>
+      <p class="text-sm text-gray-600">Enter the amount you want to transfer</p>
+    </div>
+
+    <div class="mb-4">
+      <label for="amount" class="block mb-2">Amount (KWD)</label>
+      <p-inputNumber
+        id="amount"
+        [(ngModel)]="transferAmount"
+        [min]="1"
+        mode="currency"
+        currency="KWD"
+        [showButtons]="true"
+        class="w-full"
+      ></p-inputNumber>
+      @if (transferAmount <= 0) {
+      <small class="text-red-500">Amount must be greater than 0</small>
+      }
+    </div>
+
+    <div class="flex justify-between">
+      <p-button
+        label="Cancel"
+        icon="pi pi-times"
+        (onClick)="cancelTransfer()"
+        severity="secondary"
+      ></p-button>
+      <p-button
+        label="Transfer"
+        icon="pi pi-check"
+        (onClick)="confirmTransfer()"
+        [disabled]="transferAmount <= 0 || isTransferring"
+        [loading]="isTransferring"
+        severity="success"
+      ></p-button>
+    </div>
+  </div>
+  }
+</p-dialog>
