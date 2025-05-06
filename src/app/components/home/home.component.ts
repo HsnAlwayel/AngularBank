@@ -12,6 +12,10 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { UserProfile } from '../../interfaces/auth/auth';
 import { TagModule } from 'primeng/tag';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+
 import {
   FormBuilder,
   FormGroup,
@@ -34,7 +38,10 @@ import {
     ReactiveFormsModule,
     MessagesModule,
     MessageModule,
+    FileUploadModule,
+    ToastModule,
   ],
+  providers: [MessageService],
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit {

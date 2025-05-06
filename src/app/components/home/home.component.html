@@ -14,7 +14,7 @@
       <div>
         <h2 class="text-xl font-semibold">{{ profile.username }}</h2>
         <p class="text-gray-600">
-          Account Balance: ${{ profile.balance.toFixed(2) }}
+          Account Balance: {{ profile.balance | currency : 'KWD' }}
         </p>
       </div>
     </div>
@@ -97,4 +97,47 @@
       </form>
     </p-card>
   </div>
+</div>
+
+<!-- <p>home works!</p> -->
+<div class="container mx-auto p-4">
+@if (profile) {
+<p-card [style]="{ width: '40rem' }" >
+  <ng-template pTemplate="header" let-user>
+    <!-- <h2 class="text-xl font-semibold">{{ user.image }}</h2> -->
+      <img alt="Card" src="https://primefaces.org/cdn/primeng/images/galleria/galleria11.jpg" 
+      previewImageSrc="https://primefaces.org/cdn/primeng/images/galleria/galleria11.jpg" 
+      alt="Image" 
+      width="250" />
+  </ng-template>
+    @if (profile.image) {
+    <img
+      [src]="profile.image"
+      alt="Profile"
+      class="w-14 h-14 rounded-full mr-4"
+    />
+    }
+    <ng-template pTemplate="title">
+    <div class="flex flex-col">
+      <h2 class="text-xl font-semibold">{{ profile.username }}</h2>
+    </div>
+    </ng-template>
+    <ng-template pTemplate="subtitle">
+    <div class="flex flex-col">
+      <h3 class="text-gray-600">
+        Account Balance: {{ profile.balance | currency : 'KWD' }}
+      </h3>
+    </div>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <div class="flex flex-col gap-4">
+      </div>
+    </ng-template>
+  <ng-template pTemplate="footer">
+      <div class="flex gap-3 mt-1">
+          <p-button label="Upload" severity="info" class="w-full" styleClass="w-full" />
+      </div>
+  </ng-template>
+</p-card>
+}
 </div>
