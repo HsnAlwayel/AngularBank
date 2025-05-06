@@ -1,40 +1,58 @@
+
 <p-toolbar>
   <div class="p-toolbar-group-left">
     <p-dropdown
+      class="filter-input"
       [options]="filterOptions"
       [(ngModel)]="selectedType"
       placeholder="Filter by Type"
-      (onChange)="loadTransactions()"
+      (onChange)="onSearch()"
     ></p-dropdown>
 
     <p-calendar
+      class="filter-input"
       [(ngModel)]="dateFrom"
       selectionMode="single"
       placeholder="From"
-      (onSelect)="loadTransactions()"
+      (onSelect)="onSearch()"
     ></p-calendar>
 
     <p-calendar
+      class="filter-input"
       [(ngModel)]="dateTo"
       selectionMode="single"
       placeholder="To"
-      (onSelect)="loadTransactions()"
+      (onSelect)="onSearch()"
     ></p-calendar>
+
+    <div class="amount-range filter-input">
+      <input
+        pInputText
+        type="number"
+        placeholder="Min"
+        [(ngModel)]="minAmount"
+        (input)="onSearch()"
+      />
+      <span class="range-separator">–</span>
+      <input
+        pInputText
+        type="number"
+        placeholder="Max"
+        [(ngModel)]="maxAmount"
+        (input)="onSearch()"
+      />
+    </div>
   </div>
 
   <div class="p-toolbar-group-right">
-    <input
-      pInputText
-      type="text"
-      placeholder="Search..."
-      [(ngModel)]="searchTerm"
-      (input)="loadTransactions()"
-    />
     <button
       pButton
       type="button"
-      icon="pi pi-search"
-      (click)="loadTransactions()"
+      label="Clear Filters"
+      icon="pi pi-filter-slash"
+      styleClass="p-button-danger p-button-outlined p-button-rounded"
+      (click)="clearFilters()"
+      title="Clear all filters"
     ></button>
   </div>
 </p-toolbar>
@@ -65,7 +83,8 @@
           transfer: tx.type === 'transfer'
         }"
       >
-        {{ tx.type === "deposit" ? "+" : "-" }}{{ tx.amount }}
+        {{ tx.type === "deposit" ? "+" : "-" }}
+        {{ tx.amount | number : "1.0-2" }}
       </td>
       <td>{{ tx.createdAt | date : "dd/MM/yyyy" }}</td>
       <td>{{ tx.type | titlecase }}</td>

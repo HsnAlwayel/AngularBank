@@ -3,6 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule, TablePageEvent } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
+import { DropdownModule } from 'primeng/dropdown'; 
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { TableModule, TablePageEvent } from 'primeng/table';
+import { PaginatorModule } from 'primeng/paginator';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -10,7 +16,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { Transaction } from '../../interfaces/transaction';
 import { TransactionService } from '../../services/transaction.service';
-import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-transactions',
@@ -30,69 +35,81 @@ import { ToastService } from '../../services/toast.service';
   styleUrls: ['./transactions.component.css'],
 })
 export class TransactionsComponent implements OnInit {
+  allTransactions: Transaction[] = [];
   transactions: Transaction[] = [];
-  searchTerm = '';
-  selectedType?: string;
+
+  selectedType: string | null = null;
   dateFrom?: Date;
   dateTo?: Date;
+  minAmount?: number;
+  maxAmount?: number;
   filterOptions = [
-    { label: 'All', value: undefined },
+    { label: 'All', value: null },
     { label: 'Deposit', value: 'deposit' },
     { label: 'Withdraw', value: 'withdraw' },
     { label: 'Transfer', value: 'transfer' },
   ];
 
+  /** Pagination  */
   pageSize = 10;
   totalRecords = 0;
-  loading = false;
 
-  constructor(
-    private transactionService: TransactionService,
-    private toastService: ToastService
-  ) {}
+  constructor(private transactionService: TransactionService) {}
 
   ngOnInit(): void {
-    this.loadTransactions();
+    this.transactionService.getMyTransactions().subscribe({
+      next: (data) => {
+        this.allTransactions = data;
+        this.applyFilters();
+      },
+      error: (err) => console.error('Load failed', err),
+    });
   }
 
-  loadTransactions(): void {
-    this.loading = true;
-    this.toastService.showInfo('Loading', 'Fetching your transactions...');
+  applyFilters(): void {
+    this.transactions = this.allTransactions.filter((tx) => {
+      let ok = true;
+      const txDate = new Date(tx.createdAt);
 
-    this.transactionService
-      .getMyTransactions({
-        type: this.selectedType,
-        dateFrom: this.dateFrom?.toISOString(),
-        dateTo: this.dateTo?.toISOString(),
-      })
-      .subscribe({
-        next: (data: Transaction[]) => {
-          this.transactions = data;
-          this.totalRecords = data.length;
-          this.loading = false;
-          this.toastService.showSuccess(
-            'Transactions Loaded',
-            `Found ${data.length} transactions`
-          );
-        },
-        error: (err: any) => {
-          console.error('Load failed', err);
-          this.loading = false;
-          this.toastService.showError(
-            'Error',
-            'Failed to load your transactions'
-          );
-        },
-      });
+      if (this.selectedType != null) {
+        ok = ok && tx.type === this.selectedType;
+      }
+      if (this.dateFrom) {
+        const start = new Date(this.dateFrom);
+        start.setHours(0, 0, 0, 0);
+        ok = ok && txDate >= start;
+      }
+      if (this.dateTo) {
+        const end = new Date(this.dateTo);
+        end.setHours(23, 59, 59, 999);
+        ok = ok && txDate <= end;
+      }
+      if (this.minAmount != null) {
+        ok = ok && tx.amount >= this.minAmount;
+      }
+      if (this.maxAmount != null) {
+        ok = ok && tx.amount <= this.maxAmount;
+      }
+      return ok;
+    });
+    this.totalRecords = this.transactions.length;
   }
 
   onSearch(): void {
-    this.toastService.showInfo('Filtering', 'Applying your filters...');
-    this.loadTransactions();
+    this.applyFilters();
   }
 
   onPageChange(event: TablePageEvent): void {
     this.pageSize = event.rows;
-    this.loadTransactions();
+    this.applyFilters();
+  }
+
+  clearFilters(): void {
+    this.selectedType = null;
+    this.dateFrom = undefined;
+    this.dateTo = undefined;
+    this.minAmount = undefined;
+    this.maxAmount = undefined;
+    this.applyFilters();
   }
 }

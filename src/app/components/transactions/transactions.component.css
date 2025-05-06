@@ -1,17 +1,16 @@
-/* Horizontal layout for filter radios */
-.filter-list {
-  list-style: none;
-  display: flex;
-  gap: 1.5rem;
-  padding: 0;
-  margin: 1rem 0;
+.filter-input {
+  margin-right: 1rem;
 }
 
-.filter-list li {
+.amount-range {
   display: flex;
   align-items: center;
 }
-
-.filter-list input[type="radio"] {
+.amount-range input {
+  width: 4.5rem;
   margin-right: 0.5rem;
+}
+.amount-range .range-separator {
+  margin: 0 0.5rem;
+  font-weight: bold;
 }
