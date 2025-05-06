@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { Transaction } from '../../interfaces/transaction';
 import { TransactionService } from '../../services/transaction.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-transactions',
@@ -41,17 +42,23 @@ export class TransactionsComponent implements OnInit {
     { label: 'Transfer', value: 'transfer' },
   ];
 
-  // Pagination
   pageSize = 10;
   totalRecords = 0;
+  loading = false;
 
-  constructor(private transactionService: TransactionService) {}
+  constructor(
+    private transactionService: TransactionService,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.loadTransactions();
   }
 
   loadTransactions(): void {
+    this.loading = true;
+    this.toastService.showInfo('Loading', 'Fetching your transactions...');
+
     this.transactionService
       .getMyTransactions({
         type: this.selectedType,
@@ -62,14 +69,25 @@ export class TransactionsComponent implements OnInit {
         next: (data: Transaction[]) => {
           this.transactions = data;
           this.totalRecords = data.length;
+          this.loading = false;
+          this.toastService.showSuccess(
+            'Transactions Loaded',
+            `Found ${data.length} transactions`
+          );
         },
         error: (err: any) => {
           console.error('Load failed', err);
+          this.loading = false;
+          this.toastService.showError(
+            'Error',
+            'Failed to load your transactions'
+          );
         },
       });
   }
 
   onSearch(): void {
+    this.toastService.showInfo('Filtering', 'Applying your filters...');
     this.loadTransactions();
   }
 

@@ -4,11 +4,12 @@ import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AuthService } from './services/auth/auth.service';
 import { filter } from 'rxjs/operators';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NavbarComponent],
+  imports: [CommonModule, RouterOutlet, NavbarComponent, ToastModule],
   templateUrl: './app.component.html',
 })
 export class AppComponent {
@@ -18,7 +19,6 @@ export class AppComponent {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
-        // Hide navbar on auth pages
         const authPages = ['/login', '/register'];
         this.showNavbar =
           !authPages.includes(event.url) && this.authService.isLoggedIn();

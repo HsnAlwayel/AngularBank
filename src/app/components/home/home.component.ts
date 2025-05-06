@@ -18,6 +18,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-home',
@@ -51,7 +52,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private userService: UserService,
     private transactionService: TransactionService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toastService: ToastService
   ) {
     this.transactionForm = this.fb.group({
       type: ['deposit', Validators.required],
@@ -70,6 +72,10 @@ export class HomeComponent implements OnInit {
       },
       error: (error) => {
         console.error('Failed to load profile', error);
+        this.toastService.showError(
+          'Profile Error',
+          'Failed to load your profile data'
+        );
       },
     });
   }
@@ -95,6 +101,10 @@ export class HomeComponent implements OnInit {
       next: (transaction) => {
         this.isLoading = false;
         this.successMessage = `Successfully deposited $${amount.toFixed(2)}`;
+        this.toastService.showSuccess(
+          'Deposit Successful',
+          `$${amount.toFixed(2)} has been added to your account`
+        );
         this.loadProfile(); // Refresh profile to show updated balance
         this.resetForm();
       },
@@ -102,6 +112,7 @@ export class HomeComponent implements OnInit {
         this.isLoading = false;
         this.errorMessage =
           error.error?.message || 'Deposit failed. Please try again.';
+        this.toastService.showError('Deposit Failed', this.errorMessage);
       },
     });
   }
@@ -111,6 +122,10 @@ export class HomeComponent implements OnInit {
       next: (transaction) => {
         this.isLoading = false;
         this.successMessage = `Successfully withdrew $${amount.toFixed(2)}`;
+        this.toastService.showSuccess(
+          'Withdrawal Successful',
+          `$${amount.toFixed(2)} has been withdrawn from your account`
+        );
         this.loadProfile(); // Refresh profile to show updated balance
         this.resetForm();
       },
@@ -118,6 +133,7 @@ export class HomeComponent implements OnInit {
         this.isLoading = false;
         this.errorMessage =
           error.error?.message || 'Withdrawal failed. Please try again.';
+        this.toastService.showError('Withdrawal Failed', this.errorMessage);
       },
     });
   }
