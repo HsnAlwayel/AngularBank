@@ -14,7 +14,7 @@
       <div>
         <h2 class="text-xl font-semibold">{{ profile.username }}</h2>
         <p class="text-gray-600">
-          Account Balance: ${{ profile.balance.toFixed(2) }}
+          Account Balance: ${{ profile.balance | number : "1.2-2" }}
         </p>
       </div>
     </div>

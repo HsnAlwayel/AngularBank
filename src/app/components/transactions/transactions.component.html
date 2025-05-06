@@ -3,6 +3,7 @@
 <p-toolbar>
   <div class="p-toolbar-group-left">
     <p-dropdown
+      class="filter-input"
       [options]="filterOptions"
       [(ngModel)]="selectedType"
       placeholder="Filter by Type"
@@ -10,6 +11,7 @@
     ></p-dropdown>
 
     <p-calendar
+      class="filter-input"
       [(ngModel)]="dateFrom"
       selectionMode="single"
       placeholder="From"
@@ -17,29 +19,28 @@
     ></p-calendar>
 
     <p-calendar
+      class="filter-input"
       [(ngModel)]="dateTo"
       selectionMode="single"
       placeholder="To"
       (onSelect)="onSearch()"
     ></p-calendar>
 
-    <div class="amount-range" style="display: flex; align-items: center">
+    <div class="amount-range filter-input">
       <input
         pInputText
         type="number"
         placeholder="Min"
         [(ngModel)]="minAmount"
         (input)="onSearch()"
-        style="width: 4.5rem; margin-right: 0.25rem"
       />
-      <span style="margin: 0 0.5rem; font-weight: bold">–</span>
+      <span class="range-separator">–</span>
       <input
         pInputText
         type="number"
         placeholder="Max"
         [(ngModel)]="maxAmount"
         (input)="onSearch()"
-        style="width: 4.5rem; margin-left: 0.25rem"
       />
     </div>
   </div>
@@ -83,7 +84,8 @@
           transfer: tx.type === 'transfer'
         }"
       >
-        {{ tx.type === "deposit" ? "+" : "-" }}{{ tx.amount }}
+        {{ tx.type === "deposit" ? "+" : "-" }}
+        {{ tx.amount | number : "1.0-2" }}
       </td>
       <td>{{ tx.createdAt | date : "dd/MM/yyyy" }}</td>
       <td>{{ tx.type | titlecase }}</td>
