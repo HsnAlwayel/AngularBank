@@ -1,0 +1,50 @@
+.filter-input {
+  margin-right: 1rem;
+}
+
+.amount-range {
+  display: flex;
+  align-items: center;
+}
+.amount-range input {
+  width: 4.5rem;
+  margin-right: 0.5rem;
+}
+.amount-range .range-separator {
+  margin: 0 0.5rem;
+  font-weight: bold;
+}
+
+/* Reset paginator styling to be more conventional */
+::ng-deep .p-paginator {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: var(--dark-100);
+  border-top: 1px solid var(--dark-300);
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page {
+  min-width: 2.5rem;
+  height: 2.5rem;
+  margin: 0 0.125rem;
+}
+
+::ng-deep .p-paginator-page.p-highlight {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+::ng-deep .p-paginator .p-paginator-first,
+::ng-deep .p-paginator .p-paginator-prev,
+::ng-deep .p-paginator .p-paginator-next,
+::ng-deep .p-paginator .p-paginator-last {
+  margin: 0 0.125rem;
+}
+
+/* Hide the current page report to simplify the paginator */
+::ng-deep .p-paginator .p-paginator-current {
+  display: none;
+}
