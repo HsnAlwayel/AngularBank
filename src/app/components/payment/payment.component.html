@@ -1,0 +1,113 @@
+<div class="container mx-auto p-4 max-w-md">
+  <div
+    class="bg-gradient-to-r from-primary-600 to-secondary-600 text-white p-6 rounded-xl mb-8 shadow-lg"
+  >
+    <h1 class="text-3xl font-bold mb-2">Payment Link</h1>
+    @if (isCreator) {
+    <p class="text-primary-100">Create and manage your payment requests</p>
+    } @else {
+    <p class="text-primary-100">Transfer funds to {{ recipient }}</p>
+    }
+  </div>
+
+  <p-card styleClass="shadow-lg border-0 overflow-hidden">
+    <!-- Creator View -->
+    @if (isCreator) {
+    <div class="p-4">
+      <p class="mb-4">Create a payment link to share with others:</p>
+
+      <div class="mb-4">
+        <label for="amount" class="block mb-2 font-medium">Amount</label>
+        <p-inputNumber
+          id="amount"
+          [(ngModel)]="amount"
+          [min]="1"
+          mode="currency"
+          currency="KWD"
+          [showButtons]="true"
+          styleClass="w-full"
+        >
+        </p-inputNumber>
+      </div>
+
+      <p-button
+        label="Generate Link"
+        icon="pi pi-link"
+        (onClick)="generatePaymentLink()"
+        [disabled]="amount <= 0"
+        styleClass="w-full mt-4"
+      >
+      </p-button>
+    </div>
+    }
+
+    <!-- Recipient View -->
+    @if (!isCreator && recipientUser) {
+    <div class="p-4">
+      <div class="text-center mb-6">
+        @if (recipientUser.image) {
+        <div class="mb-3">
+          <img
+            [src]="recipientUser.image"
+            class="w-20 h-20 rounded-full mx-auto"
+            alt="Profile picture"
+          />
+        </div>
+        } @else {
+        <div class="mb-3">
+          <div
+            class="w-20 h-20 rounded-full bg-primary-900 flex items-center justify-center mx-auto"
+          >
+            <span class="text-primary-300 text-2xl font-bold">
+              {{ recipient.charAt(0).toUpperCase() }}
+            </span>
+          </div>
+        </div>
+        }
+        <h2 class="text-xl font-semibold">{{ recipient }}</h2>
+        <p class="text-gray-400">is requesting</p>
+        <div class="text-2xl font-bold mt-2">KWD {{ amount }}</div>
+      </div>
+
+      <p-button
+        label="Transfer Funds"
+        icon="pi pi-send"
+        severity="success"
+        [loading]="loading"
+        (onClick)="processPayment()"
+        styleClass="w-full"
+      >
+      </p-button>
+
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-outlined p-button-danger w-full mt-3"
+        [routerLink]="['/home']"
+      ></button>
+    </div>
+    }
+
+    <!-- Loading or Error State -->
+    @if (!isCreator && !recipientUser && recipient) {
+    <div class="p-4 text-center">
+      <i class="pi pi-spin pi-spinner text-4xl mb-3"></i>
+      <p>Loading payment details...</p>
+    </div>
+    } @if (!recipient) {
+    <div class="p-4 text-center">
+      <i class="pi pi-exclamation-triangle text-4xl mb-3 text-yellow-500"></i>
+      <button
+        pButton
+        type="button"
+        label="Go Home"
+        icon="pi pi-home"
+        class="p-button-outlined mt-3"
+        [routerLink]="['/home']"
+      ></button>
+    </div>
+    }
+  </p-card>
+</div>

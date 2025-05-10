@@ -7,7 +7,7 @@
   </div>
 
   @if (profile) {
-  <p-card styleClass="mb-8 hover-scale overflow-hidden">
+  <p-card styleClass="mb-6 hover-scale overflow-hidden">
     <div class="flex flex-col md:flex-row items-center justify-between">
       <div class="flex items-center mb-4 md:mb-0">
         @if (profile.image) {
@@ -51,8 +51,8 @@
   </p-card>
   }
 
-  <!-- Transaction Form with improved layout -->
-  <p-card styleClass="w-full hover-scale">
+  <!-- Transaction card -->
+  <p-card styleClass="w-full hover-scale mb-6">
     <ng-template pTemplate="header">
       <div class="flex items-center p-4 border-b border-dark-300">
         <i class="pi pi-wallet text-primary-400 text-xl mr-2"></i>
@@ -136,5 +136,34 @@
         ></p-button>
       </div>
     </form>
+  </p-card>
+
+  <!-- Payment Links card - fixed positioning -->
+  <p-card styleClass="w-full hover-scale mb-6">
+    <ng-template pTemplate="header">
+      <div class="flex items-center p-4 border-b border-dark-300">
+        <i class="pi pi-link text-primary-400 text-xl mr-2"></i>
+        <h3 class="text-xl font-semibold text-gray-200">Payment Links</h3>
+      </div>
+    </ng-template>
+
+    <div class="p-4">
+      <div class="flex flex-col md:flex-row items-center justify-between">
+        <div class="mb-4 md:mb-0 md:mr-4 text-left">
+          <h4 class="text-lg font-medium text-gray-200 mb-2">
+            Request Money Easily
+          </h4>
+          <p class="text-gray-400">
+            Create a shareable payment link to request funds from anyone.
+          </p>
+        </div>
+        <p-button
+          label="Create Payment Link"
+          icon="pi pi-link"
+          [routerLink]="['/payment']"
+          styleClass="p-button-primary p-button-raised"
+        ></p-button>
+      </div>
+    </div>
   </p-card>
 </div>

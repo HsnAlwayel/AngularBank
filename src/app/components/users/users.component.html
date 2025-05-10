@@ -19,6 +19,10 @@
     [globalFilterFields]="['username', 'balance']"
     [tableStyle]="{ 'min-width': '50rem' }"
     styleClass="p-datatable-rounded p-datatable-hoverable-rows"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
+    [paginatorPosition]="'bottom'"
+    [alwaysShowPaginator]="true"
   >
     <ng-template pTemplate="header">
       <tr>

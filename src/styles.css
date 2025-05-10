@@ -506,3 +506,96 @@ body {
 .p-ink {
   z-index: 1;
 }
+/* Reset toast styling to default PrimeNG light theme */
+.p-toast {
+  opacity: 1;
+}
+
+.p-toast .p-toast-message {
+  background: #ffffff;
+  color: #495057;
+  border: 0 none;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  margin: 0 0 1rem 0;
+}
+
+.p-toast .p-toast-message .p-toast-message-content {
+  padding: 1rem;
+  border-width: 0 0 0 6px;
+}
+
+.p-toast .p-toast-message.p-toast-message-info {
+  background: #ffffff;
+  border: solid #3b82f6;
+  border-width: 0 0 0 6px;
+  color: #495057;
+}
+
+.p-toast .p-toast-message.p-toast-message-info .p-toast-message-icon {
+  color: #3b82f6;
+}
+
+.p-toast .p-toast-message.p-toast-message-success {
+  background: #ffffff;
+  border: solid #10b981;
+  border-width: 0 0 0 6px;
+  color: #495057;
+}
+
+.p-toast .p-toast-message.p-toast-message-success .p-toast-message-icon {
+  color: #10b981;
+}
+
+.p-toast .p-toast-message.p-toast-message-warn {
+  background: #ffffff;
+  border: solid #f59e0b;
+  border-width: 0 0 0 6px;
+  color: #495057;
+}
+
+.p-toast .p-toast-message.p-toast-message-warn .p-toast-message-icon {
+  color: #f59e0b;
+}
+
+.p-toast .p-toast-message.p-toast-message-error {
+  background: #ffffff;
+  border: solid #ef4444;
+  border-width: 0 0 0 6px;
+  color: #495057;
+}
+
+.p-toast .p-toast-message.p-toast-message-error .p-toast-message-icon {
+  color: #ef4444;
+}
+
+.p-toast .p-toast-message .p-toast-detail {
+  margin-top: 0.5rem;
+  color: #495057;
+}
+
+.p-toast .p-toast-message .p-toast-icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.p-toast .p-toast-message .p-toast-summary {
+  font-weight: 700;
+  color: #495057;
+}
+
+.p-toast .p-toast-message .p-toast-message-icon {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+.p-toast .p-toast-message-content .p-toast-message-icon.pi-info-circle::before,
+.p-toast .p-toast-message-content .p-toast-message-icon.pi-check::before,
+.p-toast
+  .p-toast-message-content
+  .p-toast-message-icon.pi-exclamation-triangle::before,
+.p-toast
+  .p-toast-message-content
+  .p-toast-message-icon.pi-times-circle::before {
+  vertical-align: middle;
+}

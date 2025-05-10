@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule, TablePageEvent } from 'primeng/table';
@@ -10,6 +10,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { Transaction } from '../../interfaces/transaction';
 import { TransactionService } from '../../services/transaction.service';
+import { UserService } from '../../services/user.service';
+import { forkJoin, Subscription } from 'rxjs';
+import { User } from '../../interfaces/user';
 
 @Component({
   selector: 'app-transactions',
@@ -28,9 +31,10 @@ import { TransactionService } from '../../services/transaction.service';
   templateUrl: './transactions.component.html',
   styleUrls: ['./transactions.component.css'],
 })
-export class TransactionsComponent implements OnInit {
+export class TransactionsComponent implements OnInit, OnDestroy {
   allTransactions: Transaction[] = [];
   transactions: Transaction[] = [];
+  userMap: { [key: string]: string } = {}; // Map user IDs to usernames
 
   selectedType: string | null = null;
   dateFrom?: Date;
@@ -48,16 +52,55 @@ export class TransactionsComponent implements OnInit {
   pageSize = 10;
   totalRecords = 0;
 
-  constructor(private transactionService: TransactionService) {}
+  // Add subscription to manage unsubscribing
+  private refreshSubscription: Subscription;
+
+  constructor(
+    private transactionService: TransactionService,
+    private userService: UserService
+  ) {
+    // Subscribe to refresh events
+    this.refreshSubscription = this.transactionService.refreshNeeded$.subscribe(
+      () => {
+        this.loadData();
+      }
+    );
+  }
 
   ngOnInit(): void {
-    this.transactionService.getMyTransactions().subscribe({
-      next: (data) => {
-        this.allTransactions = data;
+    this.loadData();
+  }
+
+  ngOnDestroy(): void {
+    // Clean up subscription when component is destroyed
+    if (this.refreshSubscription) {
+      this.refreshSubscription.unsubscribe();
+    }
+  }
+
+  loadData(): void {
+    // Load both transactions and users in parallel
+    forkJoin({
+      transactions: this.transactionService.getMyTransactions(),
+      users: this.userService.getAllUsers(),
+    }).subscribe({
+      next: (result) => {
+        // Create a map of user IDs to usernames
+        this.userMap = {};
+        result.users.forEach((user) => {
+          this.userMap[user._id] = user.username;
+        });
+
+        this.allTransactions = result.transactions;
         this.applyFilters();
       },
       error: (err) => console.error('Load failed', err),
     });
+  }
+
+  // Get username from userId
+  getUsernameById(userId: string): string {
+    return this.userMap[userId] || 'Unknown User';
   }
 
   applyFilters(): void {
